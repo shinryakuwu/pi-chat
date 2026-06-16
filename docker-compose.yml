@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "bundle exec rails db:prepare && bundle exec rails s -b 0.0.0.0"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/rails
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/myapp_development
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
