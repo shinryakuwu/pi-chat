@@ -1,24 +1,9 @@
-# README
+# Prerequisites
+- Docker version 29.4.2
+- Docker Compose version v5.1.3
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Launch the app locally in 2 easy steps
+1) Execute: `docker compose up --build`
+2) Read a prayer
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+The app will be accessible via http://localhost:3000/
