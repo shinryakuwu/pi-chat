@@ -1,0 +1,12 @@
+<h1>Users</h1>
+
+<div id="users">
+  <% @users.each do |user| %>
+    <div>
+      <strong><%= user.name %></strong>
+      <div><%= user.username %></div>
+      <div><%= user.bio %></div>
+    </div>
+    <br>
+  <% end %>
+</div>
