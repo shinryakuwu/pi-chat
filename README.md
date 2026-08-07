@@ -7,3 +7,9 @@
 2) Read a prayer
 
 The app will be accessible via http://localhost:3000/
+
+# Running tests
+`docker compose exec app bin/rails test`
+
+# Running rubocop
+`docker compose exec app bin/rubocop`

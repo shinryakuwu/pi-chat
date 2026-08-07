@@ -9,7 +9,9 @@ services:
     volumes:
       - .:/rails
     environment:
-      DATABASE_URL: postgres://postgres:password@db:5432/myapp_development
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: password
     depends_on:
       db:
         condition: service_healthy
