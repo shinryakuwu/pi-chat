@@ -1,0 +1,36 @@
+<h1>Sign Up</h1>
+
+<%= form_with model: @user do |form| %>
+  <% if form.object.errors.any? %>
+    <div style="color:red">Error: <%= form.object.errors.full_messages.to_sentence %></div>
+  <% end %>
+
+  <div>
+    <%= form.label :username %>
+    <%= form.text_field :username, required: true, autofocus: true %>
+  </div>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :password %>
+    <%= form.password_field :password, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :password_confirmation %>
+    <%= form.password_field :password_confirmation, required: true %>
+  </div>
+
+  <div>
+    <%= form.submit "Sign up" %>
+  </div>
+<% end %>
+<br>
+<p>
+  Already have an account?
+  <%= link_to "Sign in", new_session_path %>.
+</p>

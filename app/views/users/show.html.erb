@@ -1,0 +1,53 @@
+<h1>Profile</h1>
+
+<%= image_tag @user.profile_picture.variant(resize_to_fill: [200, 200]) if @user.profile_picture.attached? %>
+
+<% if @user == Current.user %>
+  <%= form_with model: @user, multipart: true do |form| %>
+    <% if form.object.errors.any? %>
+      <div>Error: <%= form.object.errors.full_messages.first %></div>
+    <% end %>
+    <%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+
+    <div>
+      <%= form.label :name %>
+      <%= form.text_field :name %>
+    </div>
+
+    <div>
+      <%= form.label :username %>
+      <%= form.text_field :username, required: true %>
+    </div>
+
+    <div>
+      <%= form.label :bio %>
+      <%= form.text_area :bio %>
+    </div>
+
+    <div>
+      <%= form.label :profile_picture, style: "display: block" %>
+      <%= form.file_field :profile_picture, accept: "image/*" %>
+    </div>
+
+    <% if @user.profile_picture.attached? %>
+      <div>
+        <%= form.check_box :remove_profile_picture %>
+        <%= form.label :remove_profile_picture, "Remove current profile picture" %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.submit "Update profile" %>
+    </div>
+  <% end %>
+
+  <p>
+    <%= link_to "Change password", edit_password_path %>
+  </p>
+<% else %>
+  <div>
+    <strong><%= @user.name %></strong>
+    <div><%= @user.username %></div>
+    <div><%= @user.bio %></div>
+  </div>
+<% end %>

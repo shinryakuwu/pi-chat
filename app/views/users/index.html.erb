@@ -6,6 +6,7 @@
       <strong><%= user.name %></strong>
       <div><%= user.username %></div>
       <div><%= user.bio %></div>
+      <%= link_to "Profile", user_path(user) %>
     </div>
     <br>
   <% end %>
