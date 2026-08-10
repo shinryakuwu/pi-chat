@@ -72,6 +72,17 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_notice "Username may only contain letters, numbers, hyphens, and underscores"
   end
 
+  test "delete account" do
+    assert_changes -> { User.count } do
+      sign_in_as(@user)
+      delete user_path(@user)
+      assert_redirected_to new_session_path
+    end
+
+    follow_redirect!
+    assert_notice "Your account was deleted successfully."
+  end
+
   private
 
   # TODO: move to some helper maybe

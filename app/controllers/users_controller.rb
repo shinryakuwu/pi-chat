@@ -38,7 +38,10 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    # TODO: add account deactivation, treat dependants properly
+    @user = Current.user
+    @user.destroy
+    cookies.delete(:session_id)
+    redirect_to new_session_path, notice: "Your account was deleted successfully."
   end
 
   private

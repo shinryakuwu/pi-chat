@@ -4,9 +4,9 @@ class User < ApplicationRecord
   has_secure_password
 
   has_many :sessions, dependent: :destroy
-  has_many :chat_members
+  has_many :chat_members, dependent: :nullify
   has_many :chats, through: :chat_members
-  has_many :messages, foreign_key: :author_id
+  has_many :messages, foreign_key: :author_id, dependent: :nullify
 
   has_one_attached :profile_picture
 
