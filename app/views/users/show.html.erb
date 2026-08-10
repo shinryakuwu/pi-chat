@@ -44,6 +44,9 @@
   <p>
     <%= link_to "Change password", edit_password_path %>
   </p>
+  <p>
+    <%= button_to "Delete account", @user, method: :delete, data: { turbo_confirm: "It's irreversible! Are you sure?" } %>
+  </p>
 <% else %>
   <div>
     <strong><%= @user.name %></strong>
