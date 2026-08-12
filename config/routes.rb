@@ -13,7 +13,10 @@ Rails.application.routes.draw do
   # root "posts#index"
   root "users#index"
 
-  resources :users
+  resources :users do
+    resources :messages, only: [ :index, :create ]
+  end
   resource :session, only: [ :new, :create, :destroy ]
   resource :password, only: [ :update, :edit ]
+  resources :chats, only: [ :index ]
 end

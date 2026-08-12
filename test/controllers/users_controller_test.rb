@@ -16,6 +16,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     follow_redirect!
     assert cookies[:session_id]
+    assert User.last.chats.count == 1
   end
 
   test "create with taken username" do
@@ -81,12 +82,5 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     follow_redirect!
     assert_notice "Your account was deleted successfully."
-  end
-
-  private
-
-  # TODO: move to some helper maybe
-  def assert_notice(text)
-    assert_select "div", /#{text}/
   end
 end

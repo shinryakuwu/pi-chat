@@ -21,7 +21,6 @@ class UsersController < ApplicationController
       start_new_session_for(@user)
       redirect_to root_path
     else
-      Rails.logger.warn @user.errors.full_messages.inspect
       render :new, status: :unprocessable_entity
     end
   end
@@ -39,8 +38,8 @@ class UsersController < ApplicationController
 
   def destroy
     @user = Current.user
+    terminate_session
     @user.destroy
-    cookies.delete(:session_id)
     redirect_to new_session_path, notice: "Your account was deleted successfully."
   end
 

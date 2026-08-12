@@ -3,6 +3,8 @@ class User < ApplicationRecord
 
   has_secure_password
 
+  after_create :create_self_chat
+
   has_many :sessions, dependent: :destroy
   has_many :chat_members, dependent: :nullify
   has_many :chats, through: :chat_members
@@ -24,6 +26,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def create_self_chat
+    Chat.create!(chat_type: :self_chat, chat_members_attributes: [ { user: self } ])
+  end
 
   def profile_picture_size
     return unless profile_picture.attached?
