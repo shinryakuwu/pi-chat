@@ -1,0 +1,35 @@
+<div id="nav">
+  <div id="nav_header">
+    <%= profile_picture(@user, id_attr: "profile_picture_small") %>
+    <div id="search">
+      <input id="search_input" placeholder="Search" type="text">
+    </div>
+  </div>
+  <div id="nav_content">
+    <% @chats.each do |chat| %>
+      <%= link_to chat_path(chat),
+          class: "nav_item",
+          data: { turbo_frame: "chat", action: "click->sidebar#select" } do %>
+        <%= chat_cover(chat, @user, class_attr: "nav_item_picture") %>
+        <div class="nav_item_text">
+          <div class="nav_item_name_container">
+            <div class="nav_item_name">
+              <%= chat_name(chat, @user) %>
+            </div>
+            <div class="nav_item_time">
+              <%= chat_time(chat) %>
+            </div>
+          </div>
+          <div class="nav_item_message_container">
+            <div class="nav_item_message">
+              <%= chat_preview(chat, @user) %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<turbo-frame id="chat">
+  <%= render "empty" %>
+</turbo-frame>

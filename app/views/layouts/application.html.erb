@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "App" %></title>
+    <title><%= content_for(:title) || "JINE" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="App">
+    <meta name="application-name" content="Jine">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -24,7 +24,25 @@
   </head>
 
   <body>
-    <%= yield %>
-    <%= button_to "Log out", session_path, method: :delete if authenticated? %>
+    <div id="left_side_panel"></div>
+		<div id="main">
+			<div id="window">
+				<div id="window_header">
+          <%= image_tag "window_cross.png", id: "window_header_cross" %>
+					<div id="window_header_square"></div><span id="window_header_text">JINE</span>
+				</div>
+				<div id="window_content" data-controller="sidebar">
+          <%= yield %>
+				</div>
+				<div id="window_footer">
+					<div id="window_footer_big_block"></div><div class="window_footer_small_block" id="footer_block1"></div><div class="window_footer_small_block" id="footer_block2"></div><div class="window_footer_small_block" id="footer_block3"></div>
+				</div>
+			</div>
+			<div id="icon_container">
+        <%= image_tag "jine_icon.png" %>
+				<div id="icon_text">Jine</div>
+			</div>
+		</div>
+		<div id="right_side_panel"></div>
   </body>
 </html>

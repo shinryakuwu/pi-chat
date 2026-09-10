@@ -4,10 +4,17 @@ class Chat < ApplicationRecord
   has_many :chat_members
   has_many :users, through: :chat_members
   has_many :messages
+  has_one :last_message, -> { order(created_at: :desc) }, class_name: "Message"
+
+  has_one_attached :cover
 
   accepts_nested_attributes_for :chat_members
 
   validate :members_count
+
+  def recipient(current_user)
+    users.find { |user| user.id != current_user.id }
+  end
 
   private
 

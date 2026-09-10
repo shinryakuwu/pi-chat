@@ -1,0 +1,45 @@
+<turbo-frame id="chat">
+  <%= link_to "←",
+      chats_path,
+      data: { turbo_frame: "chat", action: "click->sidebar#clear" },
+      id: "back_to_navigation" %>
+  <div id="chat_container">
+    <div id="chat_content">
+      <% @messages.each do |message| %>
+        <% if message.author_id == @user.id %>
+          <div class="message sent text_message">
+            <div class="message_actions">
+              <span class="time">
+                <%= message.created_at.strftime("%H:%M") %>
+              </span>
+            </div>
+            <% if message.text_message? %>
+              <div class="bubble"><%= message.text %></div>
+            <% elsif message.drawing_message? %>
+              <%= image_tag message.drawing, class: "chat_drawing" %>
+            <% elsif message.sticker_message? %>
+              <%= image_tag message.sticker.sticker_image, class: "chat_sticker" %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="message received text_message">
+            <%= profile_picture(message.author, class_attr: "profile_picture") %>
+            <% if message.text_message? %>
+              <div class="bubble"><%= message.text %></div>
+            <% elsif message.drawing_message? %>
+              <%= image_tag message.drawing, class: "chat_drawing" %>
+            <% elsif message.sticker_message? %>
+              <%= image_tag message.sticker.sticker_image, class: "chat_sticker" %>
+            <% end %>
+            <div class="message_actions">
+              <span class="time">
+                <%= message.created_at.strftime("%H:%M") %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <%= render "chats/input_panel", message_url: chat_messages_path(@chat) %>
+</turbo-frame>
