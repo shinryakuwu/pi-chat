@@ -1,0 +1,35 @@
+<div id="chat_button_panel">
+  <button
+    class="chat_button message_type_button active"
+    id="text_button"
+    data-action="click->chat-input#select"
+  >
+    <%= image_tag "text_icon.png", class: "inactive" %>
+    <%= image_tag "text_icon_active.png", class: "active" %>
+  </button>
+  <button
+    class="chat_button message_type_button"
+    id="paint_button"
+    data-action="click->chat-input#select"
+  >
+    <%= image_tag "paint_icon.png", class: "inactive" %>
+    <%= image_tag "paint_icon_active.png", class: "active" %>
+  </button>
+  <button
+    class="chat_button message_type_button"
+    id="stickers_button"
+    data-action="click->chat-input#select"
+  >
+    <%= image_tag "sticker_icon.png", class: "inactive" %>
+    <%= image_tag "sticker_icon_active.png", class: "active" %>
+  </button>
+  <button
+    type="submit"
+    class="chat_button"
+    id="send_button"
+    form="chat_text_tab"
+    data-chat-input-target="send"
+  >
+    <%= image_tag "send_icon.png" %>
+  </button>	
+</div>

@@ -22,7 +22,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert @user.authenticate("new")
   end
 
-   test "update with incorrect old password" do
+   test "not update with incorrect old password" do
     assert_no_changes -> { @user.reload.password_digest } do
       put password_path, params: { old_password: "invalid", password: "new", password_confirmation: "new" }
       assert_redirected_to edit_password_path
@@ -33,7 +33,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert @user.authenticate("password")
   end
 
-  test "update with non matching passwords" do
+  test "not update with non matching passwords" do
     assert_no_changes -> { @user.reload.password_digest } do
       put password_path, params: { old_password: "password", password: "no", password_confirmation: "match" }
       assert_redirected_to edit_password_path

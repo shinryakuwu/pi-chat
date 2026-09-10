@@ -1,37 +1,63 @@
 class MessagesController < ApplicationController
-  before_action :set_receiver, only: %i[ index create ]
-  before_action :set_chat, only: %i[ index create ]
+  before_action :set_user
+  before_action :set_receiver, only: %i[ index ]
 
   def index
-    @messages = @chat&.messages
+    # this action is used to display an empty conversation so you can initiate a chat with someone
   end
 
   def create
-    @chat ||= Chat.create(chat_members_attributes: [ { user: Current.user }, { user: @receiver } ])
-    if @chat.persisted?
+    # this action processes both chat_messages_path(chat) and user_messages_path(user)
+    ApplicationRecord.transaction do # all database changes must succeed or fail together
+      @chat = if params[:chat_id].present?
+                @user.chats.find(params[:chat_id])
+      elsif params[:user_id].present?
+                set_chat || create_chat
+      end
       send_message
-      redirect_to user_messages_path(@receiver)
-    else
+    end
+    redirect_to chat_path(@chat)
+  rescue ActiveRecord::RecordInvalid => error
+    if params[:user_id].present?
       render :index, status: :unprocessable_entity
+    else
+      # redirect_to chat_path(@chat), alert: "Something went wrong. Please try again."
+      @messages = @chat.messages
+      @stickers = Sticker.all
+      @error = error.record.errors.full_messages
+      render "chats/show", status: :unprocessable_entity
     end
   end
 
   private
+
+  def set_user
+    @user = Current.user
+  end
 
   def set_receiver
     @receiver = User.find_by!(username: params[:user_id])
   end
 
   def set_chat
-    if @receiver == Current.user
-      @chat = Current.user.chats.self_chat.first
+    set_receiver
+
+    if @receiver == @user
+      @user.chats.self_chat.first
     else
-      @chat = Current.user.chats.direct_chat.where(id: ChatMember.where(user_id: @receiver.id).select(:chat_id)).first
+      @user.chats.direct_chat.where(id: ChatMember.where(user_id: @receiver.id).select(:chat_id)).first
     end
   end
 
+  def create_chat
+    Chat.create!(chat_members_attributes: [ { user: @user }, { user: @receiver } ])
+  end
+
   def send_message
-    ## TODO: move message creation logic to service because there'll be a lot going on
-    @chat.messages.create!(author: Current.user, text: params[:text])
+    ::MessageCreator.call(@chat, @user, message_params)
+  end
+
+  def message_params
+    params.permit(:text, :sticker_id, :drawing)
   end
 end
