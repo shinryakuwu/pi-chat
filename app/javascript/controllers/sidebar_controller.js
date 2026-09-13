@@ -11,4 +11,14 @@ export default class extends Controller {
       .querySelectorAll(".nav_item")
       .forEach(item => item.classList.remove("active"))
   }
+
+  refresh(event) {
+    if (!event.detail.success) {
+      return
+    }
+
+    this.element
+      .querySelector("#navigation")
+      .reload()
+  }
 }

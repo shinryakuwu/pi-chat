@@ -32,6 +32,18 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_match "I know what you did.", response.body
   end
 
+  test "create a very long message" do
+    chat = @sender.chats.self_chat.first
+
+    assert_changes -> { chat.messages.count }, +2 do
+      post chat_messages_path(chat), params: { text: "arrowheads " * 100 }
+      assert_redirected_to chat_path(chat)
+    end
+
+    follow_redirect!
+    assert_match "arrowheads", response.body
+  end
+
   test "not create message in chat when sender is not an owner" do
     assert_no_changes -> { Chat.count } do
       post chat_messages_path(@receiver.chats.self_chat.first), params: { text: "I know what you did." }

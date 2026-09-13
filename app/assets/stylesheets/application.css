@@ -184,10 +184,12 @@ body {
   position: relative;
 }
 
-#nav {
+#navigation {
   width: 30%;
   background-color: #fcf0fd;
   min-width: 192px;
+  overflow: auto;
+  overflow-x: hidden;
 }
 
 #nav_header {
@@ -364,11 +366,6 @@ body {
   color: white;
   padding: 1px 7px 1px 9px;
   flex-shrink: 0;
-}
-
-#nav {
-  overflow: auto;
-  overflow-x: hidden;
 }
 
 #chat_stickers_tab {
@@ -883,7 +880,7 @@ body {
 }
 
 @media screen and (max-width: 800px) {
-  #nav,
+  #navigation,
   #chat {
     width: 100%;
     height: 100%;
@@ -893,7 +890,7 @@ body {
     display: none;
   }
 
-  #window.show_chat #nav {
+  #window.show_chat #navigation {
     display: none;
   }
 
