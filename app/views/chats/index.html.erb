@@ -9,7 +9,7 @@
     <% @chats.each do |chat| %>
       <%= link_to chat_path(chat),
           class: "nav_item",
-          data: { turbo_frame: "chat", action: "click->sidebar#select click->window#showChat" } do %>
+          data: { turbo_frame: "chat", chat_id: chat.id, action: "click->sidebar#select click->window#showChat" } do %>
         <%= chat_cover(chat, @user, class_attr: "nav_item_picture") %>
         <div class="nav_item_text">
           <div class="nav_item_name_container">

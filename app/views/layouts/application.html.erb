@@ -31,7 +31,11 @@
           <%= image_tag "window_cross.png", id: "window_header_cross", data: { action: "click->window#close" } %>
 					<div id="window_header_square"></div><span id="window_header_text">JINE</span>
 				</div>
-				<div id="window_content" data-controller="sidebar" data-action="turbo:submit-end->sidebar#refresh">
+				<div
+          id="window_content"
+          data-controller="sidebar"
+          data-action="turbo:submit-end->sidebar#refresh turbo:frame-load->sidebar#selectOnReload"
+        >
           <%= yield %>
 				</div>
 				<div id="window_footer">

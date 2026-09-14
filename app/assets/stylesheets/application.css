@@ -434,6 +434,14 @@ body {
   overflow-wrap: anywhere;
 }
 
+.message.sticker_message {
+  height: 100px;
+}
+
+.message.drawing_message {
+  height: 180px;
+}
+
 .message .profile_picture {
   align-self: flex-start;
 }

@@ -4,7 +4,7 @@
       data: { turbo_frame: "chat", action: "click->sidebar#clear click->window#showNavigation" },
       id: "back_to_navigation" %>
   <div id="chat_container" data-controller="messages">
-    <div id="chat_content">
+    <div id="chat_content" data-chat-id="<%= @chat.id %>">
       <% @messages.each do |message| %>
         <% if message.author_id == @user.id %>
           <div class="message sent <%= message.message_type %>">
