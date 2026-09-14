@@ -1,0 +1,5 @@
+one_self_chat:
+  chat_type: self_chat
+
+two_self_chat:
+  chat_type: self_chat

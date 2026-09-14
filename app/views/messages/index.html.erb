@@ -1,23 +1,11 @@
-<h1><%= @receiver.name || "" %> | <%= @receiver.username %></h1>
-
-<% if @chat&.errors&.any? %>
-    <div style="color:red">Error: <%= @chat.errors.full_messages.to_sentence %></div>
-<% end %>
-
-<% if @messages.present? %>
-  <div>
-    <% @messages.each do |message| %>
-      <div>
-        <strong><%= message.author.name %></strong>
-        <div><%= message.text %></div>
-        <div><%= message.created_at %></div>
-      </div>
-      <br>
-    <% end %>
+<turbo-frame id="chat">
+  <%= link_to "←",
+      chats_path,
+      data: { turbo_frame: "chat", action: "click->sidebar#clear" },
+      id: "back_to_navigation" %>
+  <div id="chat_container">
+    <div id="chat_content">
+    </div>
   </div>
-<% end %>
-
-<%= form_with url: user_messages_path(@receiver), method: :post do |form| %>
-  <%= form.text_area :text %>
-  <%= form.submit "Send" %>
-<% end %>
+  <%= render "chats/input_panel", message_url: user_messages_path(@receiver) %>
+</turbo-frame>

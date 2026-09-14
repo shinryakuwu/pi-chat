@@ -1,0 +1,125 @@
+<div id="chat_input_panel" data-controller="chat-input">
+  <%= form_with(
+    url: message_url,
+    id: "chat_text_tab",
+    class: "message_type_tab active"
+  ) do |form| %>
+    <%= form.text_area :text, id: "message_input", required: true %>
+  <% end %>
+  <%= form_with(
+    url: message_url,
+    id: "chat_paint_tab",
+    class: "message_type_tab",
+    multipart: true,
+    data: {
+      controller: "drawing",
+      action: "submit->drawing#prepareDrawing turbo:submit-end->drawing#submissionFinished"
+    }
+  ) do |form| %>
+    <%= form.file_field :drawing,
+    data: { drawing_target: "file" },
+    hidden: true %>
+    <div id="drawing_editor">
+      <div id="drawing_tools_top">
+        <label>Color:</label>
+        <input
+          type="color"
+          id="color_picker"
+          value="#000000"
+          data-drawing-target="color"
+          data-action="input->drawing#selectColor">
+        <label>Size:</label>
+        <input
+          type="range"
+          id="size_picker"
+          min="1"
+          max="30"
+          value="5"
+          data-drawing-target="size"
+          data-action="input->drawing#selectSize">
+      </div>
+      <div id="drawing_canvas_container">
+        <div id="drawing_tools_side">
+          <div
+            id="brush_button"
+            class="tool_button tool_button_state active"
+            title="brush"
+            data-action="click->drawing#selectBrush"
+          >
+            <%= image_tag "tools/brush.png", class: "inactive" %>
+            <%= image_tag "tools/brush_active.png", class: "active" %>
+          </div>
+          <div
+            id="eraser_button"
+            class="tool_button tool_button_state"
+            title="eraser"
+            data-action="click->drawing#selectEraser"
+          >
+            <%= image_tag "tools/eraser.png", class: "inactive" %>
+            <%= image_tag "tools/eraser_active.png", class: "active" %>
+          </div>
+          <div
+            id="picker_button"
+            class="tool_button tool_button_state"
+            title="picker"
+            data-action="click->drawing#selectPicker"
+          >
+            <%= image_tag "tools/picker.png", class: "inactive" %>
+            <%= image_tag "tools/picker_active.png", class: "active" %>
+          </div>
+          <div
+            id="undo_button"
+            class="tool_button"
+            title="undo"
+            data-action="click->drawing#undo"
+          >
+            <%= image_tag "tools/undo.png", class: "inactive" %>
+          </div>
+          <div
+            id="clear_button"
+            class="tool_button"
+            title="clear"
+            data-action="click->drawing#clearCanvas"
+          >
+            <%= image_tag "tools/clear.png", class: "inactive" %>
+          </div>
+        </div>
+        <canvas
+          id="drawing_canvas"
+          width="360"
+          height="180"
+          data-drawing-target="canvas"
+          data-action="
+            pointerdown->drawing#startDrawing
+            pointermove->drawing#draw
+            pointerup->drawing#stopDrawing
+            pointercancel->drawing#stopDrawing
+          "
+        ></canvas>
+      </div>
+    </div>
+  <% end %>
+  <div id="chat_stickers_tab" class="message_type_tab">
+    <div id="chat_stickers_content">
+      <%= form_with(
+          url: message_url,
+          id: "chat_sticker_form",
+          data: { chat_input_target: "stickerForm" }
+        ) do |form| %>
+        <%= form.hidden_field :sticker_id, data: { chat_input_target: "stickerId" } %>
+      <% end %>
+      <% if @stickers.present? %>
+        <% @stickers.each do |sticker| %>
+          <div
+            class="sticker"
+            data-sticker-id="<%= sticker.id %>"
+            data-action="click->chat-input#sendSticker"
+          >
+            <%= image_tag sticker.sticker_image %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <%= render "chats/chat_button_panel" %>
+</div>
