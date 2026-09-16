@@ -1,18 +1,24 @@
 class MessagesController < ApplicationController
   before_action :set_user
-  before_action :set_receiver, only: %i[ index ]
 
   def index
-    # this action is used to display an empty conversation so you can initiate a chat with someone
+    # displays a conversation with the user that you find (the actual chat might not exist yet at this point)
+    @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
+    @chat = set_chat
+
+    if @chat.present?
+      @messages = @chat.messages.includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+    end
   end
 
   def create
     # this action processes both chat_messages_path(chat) and user_messages_path(user)
     ApplicationRecord.transaction do # all database changes must succeed or fail together
-      @chat = if params[:chat_id].present?
-                @user.chats.find(params[:chat_id])
+      @chat =
+      if params[:chat_id].present?
+        @user.chats.find(params[:chat_id])
       elsif params[:user_id].present?
-                set_chat || create_chat
+        set_chat || create_chat
       end
       send_message
     end
@@ -22,8 +28,8 @@ class MessagesController < ApplicationController
       render :index, status: :unprocessable_entity
     else
       # redirect_to chat_path(@chat), alert: "Something went wrong. Please try again."
-      @messages = @chat.messages
-      @stickers = Sticker.all
+      @messages = @chat.messages.includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+      @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
       @error = error.record.errors.full_messages
       render "chats/show", status: :unprocessable_entity
     end

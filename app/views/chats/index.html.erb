@@ -1,11 +1,46 @@
 <turbo-frame id="navigation">
   <div id="nav_header">
     <%= profile_picture(@user, id_attr: "profile_picture_small") %>
-    <div id="search">
-      <input id="search_input" placeholder="Search" type="text">
-    </div>
+    <%= form_with(
+      url: chats_path,
+      id: "search",
+      method: :get,
+      data: {
+        controller: "search",
+        turbo_frame: "navigation"
+      }
+    ) do |form| %>
+      <%= form.text_field :search,
+        id: "search_input",
+        placeholder: "Search",
+        autocomplete: "off",
+        value: @search,
+        data: {
+          search_target: "input",
+          action: "input->search#changed keydown.enter->search#submit"
+      } %>
+    <% end %>
   </div>
   <div id="nav_content">
+    <% if @search_user.present? %>
+      <%= link_to user_messages_path(@search_user),
+          class: "nav_item search_result",
+          data: { turbo_frame: "chat", action: "click->sidebar#select click->window#showChat" } do %>
+        <%= profile_picture(@search_user, class_attr: "nav_item_picture") %>
+        <div class="nav_item_text">
+          <div class="nav_item_name_container">
+            <div class="nav_item_name">
+              <%= @search_user.name %>
+            </div>
+          </div>
+          <div class="nav_item_message_container">
+            <div class="nav_item_message">
+              @<%= @search_user.username %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
     <% @chats.each do |chat| %>
       <%= link_to chat_path(chat),
           class: "nav_item",

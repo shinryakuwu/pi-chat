@@ -1,6 +1,6 @@
 <turbo-frame id="chat">
   <%= link_to "←",
-      chats_path,
+      root_path,
       data: { turbo_frame: "chat", action: "click->sidebar#clear click->window#showNavigation" },
       id: "back_to_navigation" %>
   <div id="chat_container" data-controller="messages">

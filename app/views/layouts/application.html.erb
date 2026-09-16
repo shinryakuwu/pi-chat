@@ -23,7 +23,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body data-controller="home">
     <div id="left_side_panel"></div>
 		<div id="main" data-controller="window">
 			<div id="window" data-window-target="window">
@@ -34,7 +34,7 @@
 				<div
           id="window_content"
           data-controller="sidebar"
-          data-action="turbo:submit-end->sidebar#refresh turbo:frame-load->sidebar#selectOnReload"
+          data-action="message:sent->sidebar#refresh turbo:frame-load->sidebar#selectOnReload"
         >
           <%= yield %>
 				</div>

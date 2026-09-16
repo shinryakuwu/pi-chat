@@ -1,4 +1,4 @@
-<div id="chat_input_panel" data-controller="chat-input">
+<div id="chat_input_panel" data-controller="chat-input" data-action="turbo:submit-end->chat-input#submissionFinished">
   <%= form_with(
     url: message_url,
     id: "chat_text_tab",

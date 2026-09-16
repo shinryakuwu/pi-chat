@@ -44,4 +44,14 @@ export default class extends Controller {
     this.stickerIdTarget.value = event.currentTarget.dataset.stickerId
     this.stickerFormTarget.requestSubmit()
   }
+
+  submissionFinished(event) {
+    if (!event.detail.success) {
+      return
+    }
+
+    this.element.dispatchEvent(
+      new CustomEvent("message:sent", { bubbles: true })
+    )
+  }
 }

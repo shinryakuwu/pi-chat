@@ -37,6 +37,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    # TODO: rework this action, add soft delete
     @user = Current.user
     terminate_session
     @user.destroy

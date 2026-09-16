@@ -3,7 +3,7 @@ module ChatsHelper
     image =
       case chat.chat_type
       when "self_chat"
-        "pp1.png"
+        current_user.profile_picture.attached? ? current_user.profile_picture.variant(resize_to_fill: [ width, height ]) : "pp1.png"
       when "group_chat"
         chat.cover.attached? ? chat.cover.variant(resize_to_fill: [ width, height ]) : "pp1.png"
       when "direct_chat"
@@ -29,7 +29,7 @@ module ChatsHelper
   def chat_name(chat, current_user)
     case chat.chat_type
     when "self_chat"
-      "Memo"
+      "You"
     when "group_chat"
       chat.name
     when "direct_chat"

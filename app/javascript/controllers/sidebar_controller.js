@@ -31,13 +31,9 @@ export default class extends Controller {
       .forEach(item => item.classList.remove("active"))
   }
 
-  refresh(event) {
-    if (!event.detail.success) {
-      return
-    }
+  refresh() {
+    const navigation = this.element.querySelector("#navigation")
 
-    this.element
-      .querySelector("#navigation")
-      .reload()
+    navigation.src = "/chats"
   }
 }

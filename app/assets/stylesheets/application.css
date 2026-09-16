@@ -308,6 +308,10 @@ body {
   cursor: pointer;
 }
 
+.nav_item.search_result {
+  background-color: #ccecfc;
+}
+
 .nav_item_name, .nav_item_message {
   font-size: 24px;
   white-space: nowrap;
