@@ -1,23 +1,45 @@
-<h1><%= @receiver.name || "" %> | <%= @receiver.username %></h1>
-
-<% if @chat&.errors&.any? %>
-    <div style="color:red">Error: <%= @chat.errors.full_messages.to_sentence %></div>
-<% end %>
-
-<% if @messages.present? %>
-  <div>
-    <% @messages.each do |message| %>
-      <div>
-        <strong><%= message.author.name %></strong>
-        <div><%= message.text %></div>
-        <div><%= message.created_at %></div>
-      </div>
-      <br>
-    <% end %>
+<turbo-frame id="chat">
+  <%= link_to "←",
+      root_path,
+      data: { turbo_frame: "chat", action: "click->sidebar#clear click->window#showNavigation" },
+      id: "back_to_navigation" %>
+  <div id="chat_container" data-controller="messages">
+    <div id="chat_content">
+      <% @messages&.each do |message| %>
+        <% if message.author_id == @user.id %>
+          <div class="message sent <%= message.message_type %>">
+            <div class="message_actions">
+              <span class="time">
+                <%= message.created_at.strftime("%H:%M") %>
+              </span>
+            </div>
+            <% if message.text_message? %>
+              <div class="bubble"><%= message.text %></div>
+            <% elsif message.drawing_message? %>
+              <%= image_tag message.drawing, class: "chat_drawing" %>
+            <% elsif message.sticker_message? %>
+              <%= image_tag message.sticker.sticker_image, class: "chat_sticker" %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="message received <%= message.message_type %>">
+            <%= profile_picture(message.author, class_attr: "profile_picture") %>
+            <% if message.text_message? %>
+              <div class="bubble"><%= message.text %></div>
+            <% elsif message.drawing_message? %>
+              <%= image_tag message.drawing, class: "chat_drawing" %>
+            <% elsif message.sticker_message? %>
+              <%= image_tag message.sticker.sticker_image, class: "chat_sticker" %>
+            <% end %>
+            <div class="message_actions">
+              <span class="time">
+                <%= message.created_at.strftime("%H:%M") %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-<% end %>
-
-<%= form_with url: user_messages_path(@receiver), method: :post do |form| %>
-  <%= form.text_area :text %>
-  <%= form.submit "Send" %>
-<% end %>
+  <%= render "chats/input_panel", message_url: user_messages_path(@receiver) %>
+</turbo-frame>

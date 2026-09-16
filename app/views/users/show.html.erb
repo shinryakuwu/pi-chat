@@ -47,6 +47,11 @@
   <p>
     <%= button_to "Delete account", @user, method: :delete, data: { turbo_confirm: "It's irreversible! Are you sure?" } %>
   </p>
+  <% if authenticated? %>
+    <p>
+      <%= button_to "Log out", session_path, method: :delete %>
+    </p>
+  <% end %>
 <% else %>
   <div>
     <strong><%= @user.name %></strong>
