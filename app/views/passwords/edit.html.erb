@@ -1,11 +1,34 @@
-<h1>Update your password</h1>
-
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
-
-<%= form_with url: password_path(), method: :put do |form| %>
-  <%= form.password_field :old_password, required: true, placeholder: "Enter your current password", maxlength: 72 %><br>
-  <%= form.password_field :password, required: true, placeholder: "Enter new password", maxlength: 72 %><br>
-  <%= form.password_field :password_confirmation, required: true, placeholder: "Repeat new password", maxlength: 72 %><br>
-  <%= form.submit "Save" %>
-<% end %>
+<turbo-frame id="profile">
+  <div class="profile_overlay">
+    <div class="profile_window password_window">
+      <%= link_to "←",
+        user_path(@user),
+        data: { turbo_frame: "profile" },
+        id: "back_to_profile" %>
+      <%= link_to "×",
+        root_path,
+        data: { turbo_frame: "profile" },
+        class: "profile_close" %>
+      <div class="profile_header">Update your password</div>
+      <%= tag.div(flash[:alert], class: "alert") if flash[:alert] %>
+      <%= tag.div(flash[:notice], class: "notice") if flash[:notice] %>
+      <%= form_with url: password_path(), method: :put, class: "password_form" do |form| %>
+        <div class="profile_field">
+          <label>Enter your current password</label>
+          <%= form.password_field :old_password, required: true %>
+        </div>
+        <div class="profile_field">
+          <label>Enter new password</label>
+          <%= form.password_field :password, required: true %>
+        </div>
+        <div class="profile_field">
+          <label>Repeat new password</label>
+          <%= form.password_field :password_confirmation, required: true %>
+        </div>
+        <div class="profile_information_bottom">
+          <%= form.submit "Save", class: "submit" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>

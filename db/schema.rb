@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_06_185243) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_18_225431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -93,6 +93,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_06_185243) do
   create_table "users", force: :cascade do |t|
     t.text "bio"
     t.datetime "created_at", null: false
+    t.datetime "deleted_at"
     t.string "name"
     t.string "password_digest", null: false
     t.datetime "updated_at", null: false

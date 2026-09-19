@@ -4,7 +4,7 @@ module UsersHelper
       if user.profile_picture.attached?
         user.profile_picture.variant(resize_to_fill: [ width, height ])
       else
-        "pp.png"
+        "empty.png"
       end
 
     image_tag image,

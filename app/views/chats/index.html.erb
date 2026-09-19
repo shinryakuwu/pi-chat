@@ -1,6 +1,8 @@
 <turbo-frame id="navigation">
   <div id="nav_header">
-    <%= profile_picture(@user, id_attr: "profile_picture_small") %>
+    <%= link_to user_path(@user), data: { turbo_frame: "profile" } do %>
+      <%= profile_picture(@user, id_attr: "profile_picture_small") %>
+    <% end %>
     <%= form_with(
       url: chats_path,
       id: "search",
@@ -45,7 +47,13 @@
       <%= link_to chat_path(chat),
           class: "nav_item",
           data: { turbo_frame: "chat", chat_id: chat.id, action: "click->sidebar#select click->window#showChat" } do %>
-        <%= chat_cover(chat, @user, class_attr: "nav_item_picture") %>
+        <div
+          class="nav_item_picture_link"
+          data-profile-url="<%= chat_profile_page(chat, @user) %>"
+          data-action="click->sidebar#openProfile:prevent:stop"
+        >
+          <%= chat_cover(chat, @user, class_attr: "nav_item_picture") %>
+        </div>
         <div class="nav_item_text">
           <div class="nav_item_name_container">
             <div class="nav_item_name">
