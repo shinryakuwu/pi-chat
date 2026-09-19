@@ -74,7 +74,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "delete account" do
-    assert_changes -> { User.count } do
+    assert_changes -> { User.active.count }, -1 do
       sign_in_as(@user)
       delete user_path(@user)
       assert_redirected_to new_session_path

@@ -1,63 +1,108 @@
-<h1>Profile</h1>
 
-<%= image_tag @user.profile_picture.variant(resize_to_fill: [200, 200]) if @user.profile_picture.attached? %>
-
-<% if @user == Current.user %>
-  <%= form_with model: @user, multipart: true do |form| %>
-    <% if form.object.errors.any? %>
-      <div>Error: <%= form.object.errors.full_messages.first %></div>
-    <% end %>
-    <%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
-
-    <div>
-      <%= form.label :name %>
-      <%= form.text_field :name %>
+<turbo-frame id="profile">
+  <div class="profile_overlay">
+    <div class="profile_window" data-controller="profile profile-picture">
+      <%= link_to "×",
+      root_path,
+      data: { turbo_frame: "profile" },
+      class: "profile_close" %>
+      <div class="profile_header">Profile</div>
+      <% if @user == Current.user %>
+        <%= form_with model: @user do |form| %>
+          <% if form.object.errors.any? %>
+            <div class="alert"><%= form.object.errors.full_messages.to_sentence %></div>
+          <% end %>
+          <%= tag.div(flash[:notice], class: "notice") if flash[:notice] %>
+          <div class="profile_information profile_information_top">
+            <div class="profile_picture_section">
+              <%= profile_picture(@user, width: 160, height: 160) %>
+              <div class="profile_picture_button" data-action="click->profile-picture#choose">Upload image</div>
+              <% if @user.profile_picture.attached? %>
+                <%= link_to "Remove image",
+                  profile_picture_path,
+                  class: "profile_picture_button",
+                  data: { turbo_method: :delete } %>
+              <% else %>
+                <div class="profile_picture_button">Remove image</div>
+              <% end %>
+              <div class="profile_separator">★</div>
+              <%= link_to "Change password", edit_password_path, class: "profile_picture_button" %>
+              <%= link_to "Log out",
+                session_path,
+                class: "profile_picture_button",
+                data: { turbo_method: :delete, turbo_frame: "_top" } %>
+              <%= link_to "Delete account",
+                user_path,
+                class: "profile_picture_button delete_account_button",
+                data: {
+                  turbo_method: :delete,
+                  turbo_frame: "_top",
+                  turbo_confirm: "It's irreversible! Are you sure?"
+                } %>
+            </div>
+            <div class="profile_information profile_information_side">
+              <div class="profile_field">
+                <label>Name</label>
+                <%= form.text_field :name %>
+              </div>
+              <div class="profile_field">
+                <label>Username</label>
+                <%= form.text_field :username, required: true %>
+              </div>
+              <div class="profile_field">
+                <label>Bio</label><br>
+                <%= form.text_area :bio %>
+              </div>
+            </div>
+          </div>
+          <div class="profile_information profile_information_bottom">
+            <%= form.submit "Update profile", class: "submit" %>
+          </div>
+        <% end %>
+        <%= form_with(
+          url: profile_picture_path,
+          multipart: true,
+          id: "profile_picture_form",
+          data: { action: "turbo:submit-end->profile-picture#submissionFinished"}
+        ) do |form| %>
+          <%= form.file_field :profile_picture,
+              hidden: true,
+              data: {
+                "profile-picture-target": "input",
+                action: "change->profile-picture#upload"
+              } %>
+        <% end %>
+      <% else %>
+        <div class="profile_information profile_information_top">
+          <div class="profile_picture_section">
+            <%= profile_picture(@user, width: 160, height: 160) %>
+          </div>
+          <div class="profile_information profile_information_side">
+            <div class="profile_field">
+              <label>Name</label><br>
+              <div class="profile_info_text profile_name"><%= @user.name %></div>
+            </div>
+            <div class="profile_field">
+              <label>Username</label><br>
+              <div class="profile_info_text profile_username">@<%= @user.username %></div>
+            </div>
+            <div class="profile_field">
+              <label>Bio</label><br>
+              <div class="profile_info_text profile_bio"><%= @user.bio %></div>
+            </div>
+          </div>
+        </div>
+        <div class="profile_information profile_information_bottom">
+          <button
+            type="button"
+            class="submit"
+            data-username="<%= @user.username %>"
+            data-action="click->profile#message"
+          >
+            Message
+          </button>
+        </div>
+      <% end %>
     </div>
-
-    <div>
-      <%= form.label :username %>
-      <%= form.text_field :username, required: true %>
-    </div>
-
-    <div>
-      <%= form.label :bio %>
-      <%= form.text_area :bio %>
-    </div>
-
-    <div>
-      <%= form.label :profile_picture, style: "display: block" %>
-      <%= form.file_field :profile_picture, accept: "image/*" %>
-    </div>
-
-    <% if @user.profile_picture.attached? %>
-      <div>
-        <%= form.check_box :remove_profile_picture %>
-        <%= form.label :remove_profile_picture, "Remove current profile picture" %>
-      </div>
-    <% end %>
-
-    <div>
-      <%= form.submit "Update profile" %>
-    </div>
-  <% end %>
-
-  <p>
-    <%= link_to "Change password", edit_password_path %>
-  </p>
-  <p>
-    <%= button_to "Delete account", @user, method: :delete, data: { turbo_confirm: "It's irreversible! Are you sure?" } %>
-  </p>
-  <% if authenticated? %>
-    <p>
-      <%= button_to "Log out", session_path, method: :delete %>
-    </p>
-  <% end %>
-<% else %>
-  <div>
-    <strong><%= @user.name %></strong>
-    <div><%= @user.username %></div>
-    <div><%= @user.bio %></div>
   </div>
-<% end %>
-
-<%= link_to "Message", user_messages_path(@user) %>
+</turbo-frame>
