@@ -352,7 +352,7 @@ body {
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  flex-shrink: 0;
+  /* flex-shrink: 0; */
   cursor: pointer;
 }
 
@@ -654,7 +654,7 @@ body {
 .auth_header, .profile_header {
   font-family: PixelMplus12;
   font-size: 24px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .auth_form input[type=text], .auth_form input[type=password] {
@@ -677,10 +677,10 @@ body {
   background: #c0a8e0;
   cursor: pointer;
   transition: background 0.2s;
-  width: 160px;
-  margin: 5px auto 0 auto;
+  width: 168px;
   padding: 8px;
   background-color: #f6e0f8;
+  margin: 5px auto 0 auto;
   border-top: 2px solid #fcf1fc;
   border-left: 2px solid #fcf1fc;
   border-right: 2px solid #815cda;
@@ -688,8 +688,21 @@ body {
   color: #4d23cd;
 }
 
+.delete_account_button {
+  background-color: #fcc3fc;
+}
+
 .profile_picture_button {
+  display: block;
   padding: 4px;
+  text-align: center;
+}
+
+.profile_separator {
+  font-family: PixelMplus12;
+  font-size: 12px;
+  padding-top: 8px;
+  text-align: center;
 }
 
 .submit:hover, .profile_picture_button:hover {
@@ -742,16 +755,30 @@ body {
   border-radius: 16px;
 }
 
-.profile_close {
+.profile_window .submit {
+  margin-top: 10px;
+}
+
+.profile_close, #back_to_profile {
   position: absolute;
   top: 8px;
-  right: 16px;
   border: none;
   background: none;
   cursor: pointer;
+  color: #4d23cd;
+}
+
+.profile_close {
+  right: 16px;
   font-family: PixelMplus12;
   font-size: 36px;
-  color: #4d23cd;
+}
+
+#back_to_profile {
+  left: 22px;
+  top: 18px;
+  font-size: 30px;
+  font-family: PixelMplus10;
 }
 
 .profile_header {
@@ -764,13 +791,17 @@ body {
   gap: 25px;
 }
 
+.profile_information_top {
+  padding-top: 8px;
+}
+
 .profile_picture_section {
-  width: 160px;
+  width: 168px;
 }
 
 .profile_picture_section img {
-  width: 160px;
-  height: 160px;
+  width: 168px;
+  height: 168px;
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -778,16 +809,16 @@ body {
 .profile_field textarea {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  height: 150px;
+  height: 180px;
 }
 
-.profile_window input, .profile_window textarea {
+.profile_field input, .profile_field textarea {
   font-family: PixelMplus12;
   font-size: 24px;
   background-color: #fff;
   border-radius: 10px;
   color: #816bda;
-  padding: 4px 8px;
+  padding: 8px 12px;
   margin-top: 8px;
   width: 100%;
 }
@@ -797,7 +828,7 @@ body {
 }
 
 .profile_information_side {
-  min-width: 160px;
+  min-width: 168px;
   max-width: 420px;
 }
 
@@ -817,8 +848,18 @@ body {
   overflow-y: auto;
 }
 
-#your_profile.active, #user_profile.active {
-  display: flex;
+#profile_picture_form {
+  display: none;
+}
+
+.password_window {
+  max-width: 420px;
+}
+
+.password_form {
+  font-family: PixelMplus10;
+  font-size: 20px;
+  padding-top: 10px;
 }
 
 /* Chromium, Safari, Edge */

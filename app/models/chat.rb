@@ -1,9 +1,9 @@
 class Chat < ApplicationRecord
   enum :chat_type, { direct_chat: 0, group_chat: 1, self_chat: 2 }
 
-  has_many :chat_members
+  has_many :chat_members, dependent: :destroy
   has_many :users, through: :chat_members
-  has_many :messages
+  has_many :messages, dependent: :destroy
   has_one :last_message, -> { order(created_at: :desc) }, class_name: "Message"
 
   has_one_attached :cover

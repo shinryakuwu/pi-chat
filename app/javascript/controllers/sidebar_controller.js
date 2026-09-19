@@ -36,4 +36,14 @@ export default class extends Controller {
 
     navigation.src = "/chats"
   }
+
+  openProfile(event) {
+    // doing both at the point of attaching the action to an element so not needed here
+    // event.preventDefault()
+    // event.stopPropagation()
+
+    const url = event.currentTarget.dataset.profileUrl
+
+    Turbo.visit(url, { frame: "profile" })
+  }
 }
