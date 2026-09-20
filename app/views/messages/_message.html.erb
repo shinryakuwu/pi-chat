@@ -1,0 +1,32 @@
+<% if message.author_id == user.id %>
+  <div class="message sent <%= message.message_type %>">
+    <div class="message_actions">
+      <span class="time">
+        <%= message.created_at.strftime("%H:%M") %>
+      </span>
+    </div>
+    <% if message.text_message? %>
+      <div class="bubble"><%= message.text %></div>
+    <% elsif message.drawing_message? %>
+      <%= image_tag rails_blob_path(message.drawing, only_path: true), class: "chat_drawing" %>
+    <% elsif message.sticker_message? %>
+      <%= image_tag rails_blob_path(message.sticker.sticker_image, only_path: true), class: "chat_sticker" %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="message received <%= message.message_type %>">
+    <%= profile_picture(message.author, class_attr: "profile_picture") %>
+    <% if message.text_message? %>
+      <div class="bubble"><%= message.text %></div>
+    <% elsif message.drawing_message? %>
+      <%= image_tag rails_blob_path(message.drawing, only_path: true), class: "chat_drawing" %>
+    <% elsif message.sticker_message? %>
+      <%= image_tag rails_blob_path(message.sticker.sticker_image, only_path: true), class: "chat_sticker" %>
+    <% end %>
+    <div class="message_actions">
+      <span class="time">
+        <%= message.created_at.strftime("%H:%M") %>
+      </span>
+    </div>
+  </div>
+<% end %>
