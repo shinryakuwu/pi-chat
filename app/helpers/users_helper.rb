@@ -4,10 +4,10 @@ module UsersHelper
       if user.profile_picture.attached?
         user.profile_picture.variant(resize_to_fill: [ width, height ])
       else
-        "pp.png"
+        "empty.png"
       end
 
-    image_tag image,
+    image_tag rails_blob_path(image, only_path: true),
       width: width,
       height: height,
       class: class_attr,

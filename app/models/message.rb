@@ -10,6 +10,8 @@ class Message < ApplicationRecord
 
   validate :content_matches_message_type
 
+  after_create_commit :broadcast_message
+
   private
 
   def content_matches_message_type
@@ -20,6 +22,21 @@ class Message < ApplicationRecord
       errors.add(:drawing, "can't be blank") unless drawing.attached?
     when "sticker_message"
       errors.add(:sticker, "can't be blank") if sticker.blank?
+    end
+  end
+
+  def broadcast_message
+    chat.users.each do |user|
+      Turbo::StreamsChannel.broadcast_append_to(
+        chat,
+        user,
+        target: "chat_content",
+        partial: "messages/message",
+        locals: {
+          message: self,
+          user: user
+        }
+      )
     end
   end
 end

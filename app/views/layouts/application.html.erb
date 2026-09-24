@@ -34,7 +34,12 @@
 				<div
           id="window_content"
           data-controller="sidebar"
-          data-action="message:sent->sidebar#refresh turbo:frame-load->sidebar#selectOnReload"
+          data-action="
+            message:sent->sidebar#refresh
+            profile-picture:updated->sidebar#refresh
+            turbo:frame-load->sidebar#selectOnReload
+            profile:message->window#messageUser
+          "
         >
           <%= yield %>
 				</div>

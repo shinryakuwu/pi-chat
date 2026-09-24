@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#show"
 
-  resources :users do
+  resources :users, only: [ :show, :new, :create, :update, :destroy ] do
     resources :messages, only: [ :index, :create ]
   end
   resources :chats, only: [ :index, :show ] do
@@ -20,4 +20,5 @@ Rails.application.routes.draw do
   end
   resource :session, only: [ :new, :create, :destroy ]
   resource :password, only: [ :update, :edit ]
+  resource :profile_picture, only: [ :create, :destroy ]
 end
