@@ -36,6 +36,7 @@
           data-controller="sidebar"
           data-action="
             message:sent->sidebar#refresh
+            message:received->sidebar#messageReceived
             profile-picture:updated->sidebar#refresh
             turbo:frame-load->sidebar#selectOnReload
             profile:message->window#messageUser

@@ -15,7 +15,9 @@
   </div>
 <% else %>
   <div class="message received <%= message.message_type %>">
-    <%= profile_picture(message.author, class_attr: "profile_picture") %>
+    <%= link_to user_path(message.author), data: { turbo_frame: "profile" } do %>
+      <%= profile_picture(message.author, class_attr: "profile_picture") %>
+    <% end %>
     <% if message.text_message? %>
       <div class="bubble"><%= message.text %></div>
     <% elsif message.drawing_message? %>

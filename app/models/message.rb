@@ -10,7 +10,7 @@ class Message < ApplicationRecord
 
   validate :content_matches_message_type
 
-  after_create_commit :broadcast_message
+  after_create_commit :broadcast_realtime_updates
 
   private
 
@@ -25,18 +25,39 @@ class Message < ApplicationRecord
     end
   end
 
-  def broadcast_message
+  def broadcast_realtime_updates
     chat.users.each do |user|
-      Turbo::StreamsChannel.broadcast_append_to(
-        chat,
-        user,
-        target: "chat_content",
-        partial: "messages/message",
-        locals: {
-          message: self,
-          user: user
-        }
-      )
+      broadcast_message_to(user)
+
+      next if user == author
+
+      broadcast_navigation_notification_to(user)
     end
+  end
+
+  def broadcast_message_to(user)
+    Turbo::StreamsChannel.broadcast_append_to(
+      chat,
+      user,
+      target: "chat_content",
+      partial: "messages/message",
+      locals: {
+        message: self,
+        user: user
+      }
+    )
+  end
+
+  def broadcast_navigation_notification_to(user)
+    Turbo::StreamsChannel.broadcast_append_to(
+      :navigation,
+      user,
+      target: "message_notifications",
+      partial: "messages/navigation_notification",
+      locals: {
+        message: self,
+        user: user
+      }
+    )
   end
 end

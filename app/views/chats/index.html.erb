@@ -28,7 +28,13 @@
       <%= link_to user_messages_path(@search_user),
           class: "nav_item search_result",
           data: { turbo_frame: "chat", action: "click->sidebar#select click->window#showChat" } do %>
-        <%= profile_picture(@search_user, class_attr: "nav_item_picture") %>
+        <div
+          class="nav_item_picture_link"
+          data-profile-url="<%= user_path(@search_user) %>"
+          data-action="click->sidebar#openProfile:prevent:stop"
+        >
+          <%= profile_picture(@search_user, class_attr: "nav_item_picture") %>
+        </div>
         <div class="nav_item_text">
           <div class="nav_item_name_container">
             <div class="nav_item_name">

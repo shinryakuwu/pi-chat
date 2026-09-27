@@ -446,7 +446,7 @@ body {
   height: 180px;
 }
 
-.message .profile_picture {
+.message a {
   align-self: flex-start;
 }
 
@@ -916,6 +916,10 @@ body {
 
 .notice {
   color:#90f3e1;
+}
+
+#message_notifications {
+  display: none;
 }
 
 @media screen and (max-width: 1270px) {

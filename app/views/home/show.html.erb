@@ -1,3 +1,5 @@
+<div id="message_notifications"></div>
+<%= turbo_stream_from [:navigation, @user] %>
 <turbo-frame id="profile">
 </turbo-frame>
 <turbo-frame id="navigation" src="<%= chats_path %>">

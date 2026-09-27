@@ -7,7 +7,10 @@ class MessagesController < ApplicationController
     @chat = set_chat
 
     if @chat.present?
-      @messages = @chat.messages.includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+      @messages = @chat
+        .messages
+        .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+        .order(created_at: :asc)
     end
   end
 
@@ -28,7 +31,10 @@ class MessagesController < ApplicationController
       render :index, status: :unprocessable_entity
     else
       # redirect_to chat_path(@chat), alert: "Something went wrong. Please try again."
-      @messages = @chat.messages.includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+      @messages = @chat
+        .messages
+        .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+        .order(created_at: :asc)
       @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
       @error = error.record.errors.full_messages
       render "chats/show", status: :unprocessable_entity

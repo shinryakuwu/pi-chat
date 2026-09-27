@@ -19,7 +19,10 @@ class ChatsController < ApplicationController
 
   def show
     @chat = @user.chats.find(params[:id])
-    @messages = @chat.messages.includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+    @messages = @chat
+      .messages
+      .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+      .order(created_at: :asc)
     @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
   end
 
