@@ -3,12 +3,12 @@ module ChatsHelper
     image =
       case chat.chat_type
       when "self_chat"
-        current_user.profile_picture.attached? ? current_user.profile_picture.variant(resize_to_fill: [ width, height ]) : "pp1.png"
+        current_user.deleted_at? ? "deleted.png" : chat_profile_picture(current_user, width, height)
       when "group_chat"
-        chat.cover.attached? ? chat.cover.variant(resize_to_fill: [ width, height ]) : "pp1.png"
+        chat.cover.attached? ? chat.cover.variant(resize_to_fill: [ width, height ]) : "empty.png"
       when "direct_chat"
         recipient = chat.recipient(current_user)
-        recipient_profile_picture(recipient, width, height)
+        recipient&.deleted_at? ? "deleted.png" : chat_profile_picture(recipient, width, height)
       end
 
     image_tag image,
@@ -18,12 +18,8 @@ module ChatsHelper
       id: id_attr
   end
 
-  def recipient_profile_picture(recipient, width, height)
-    if recipient&.profile_picture&.attached?
-      recipient.profile_picture.variant(resize_to_fill: [ width, height ])
-    else
-      "pp1.png"
-    end
+  def chat_profile_picture(user, width, height)
+    user&.profile_picture&.attached? ? user.profile_picture.variant(resize_to_fill: [ width, height ]) : "empty.png"
   end
 
   def chat_name(chat, current_user)
@@ -65,6 +61,17 @@ module ChatsHelper
       chat.last_message.author_id == current_user.id ? "You: " + preview : preview
     else
       chat.self_chat? ? "Your personal space" : "History cleared"
+    end
+  end
+
+  def chat_profile_page(chat, current_user)
+    case chat.chat_type
+    when "self_chat"
+      user_path(current_user)
+    when "group_chat"
+      # TODO: add showing group info
+    when "direct_chat"
+      user_path(chat.recipient(current_user))
     end
   end
 end

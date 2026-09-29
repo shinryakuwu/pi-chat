@@ -2,11 +2,6 @@ class UsersController < ApplicationController
   unauthenticated_access_only only: %i[ new create ]
   rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_user_path, alert: "Try again later." }
 
-  def index
-    # TODO: remove this action later
-    @users = User.all
-  end
-
   def show
     @user = User.find_by!(username: params[:id])
   end
@@ -28,8 +23,6 @@ class UsersController < ApplicationController
   def update
     @user = Current.user
     if @user.update(profile_params)
-      @user.profile_picture.purge if params[:user][:remove_profile_picture] == "1"
-
       redirect_to user_path(@user), status: :see_other, notice: "Your profile was updated successfully."
     else
       render :show, status: :unprocessable_entity
@@ -37,10 +30,15 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    # TODO: rework this action, add soft delete
     @user = Current.user
     terminate_session
-    @user.destroy
+    @user.update!(
+      deleted_at: Time.current,
+      name: "Deleted user",
+      bio: nil
+    )
+    @user.profile_picture.purge
+
     redirect_to new_session_path, notice: "Your account was deleted successfully."
   end
 
@@ -51,6 +49,6 @@ class UsersController < ApplicationController
   end
 
   def profile_params
-    params.expect(user: [ :username, :name, :bio, :profile_picture ])
+    params.expect(user: [ :username, :name, :bio ])
   end
 end

@@ -9,7 +9,7 @@ class ChatsController < ApplicationController
       .order(updated_at: :desc)
 
     if @search.present?
-      @search_user = User.find_by(username: sanitize_search)
+      @search_user = User.active.find_by(username: sanitize_search)
 
       filter_chats
     end
@@ -19,7 +19,10 @@ class ChatsController < ApplicationController
 
   def show
     @chat = @user.chats.find(params[:id])
-    @messages = @chat.messages.includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+    @messages = @chat
+      .messages
+      .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
+      .order(created_at: :asc)
     @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
   end
 
@@ -46,8 +49,7 @@ class ChatsController < ApplicationController
   end
 
   def sanitize_search
-    # match any character which is not a letter, a number, "-" or "_" and remove it from a string.
-    # \p{L} - unicode letter, \p{N} - unicode number, /u tells Ruby to interpret the regex as Unicode.
-    @search.to_s.gsub(/[^\p{L}\p{N}_-]/u, "")
+    # remove every character that's not a letter, a number, "-" or "_"
+    @search.to_s.gsub(/[^a-zA-Z0-9_-]/, "")
   end
 end

@@ -12,7 +12,9 @@ class User < ApplicationRecord
 
   has_one_attached :profile_picture
 
-  validates :username, presence: true, uniqueness: true
+  validates :username, presence: true, uniqueness: true, length: { maximum: 100 }
+  validates :name, length: { maximum: 100 }
+  validates :bio, length: { maximum: 1000 }
   validate :profile_picture_size
   validate :profile_picture_type
   validates :username,
@@ -20,6 +22,8 @@ class User < ApplicationRecord
       with: USERNAME_FORMAT,
       message: "may only contain letters, numbers, hyphens, and underscores"
     }
+
+  scope :active, -> { where(deleted_at: nil) }
 
   def to_param
     username
