@@ -25,6 +25,10 @@ export default class extends Controller {
     event.currentTarget.classList.add("active")
   }
 
+  hideUnreadCount(event) {
+    event.currentTarget.querySelector(".nav_item_count")?.remove()
+  }
+
   clear() {
     this.element
       .querySelectorAll(".nav_item")

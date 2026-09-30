@@ -16,6 +16,13 @@ class Chat < ApplicationRecord
     users.find { |user| user.id != current_user.id }
   end
 
+  def unread_count(current_user)
+    chat_member = chat_members.find_by!(user_id: current_user.id)
+    unread_messages = messages.where.not(author_id: current_user.id)
+    unread_messages = unread_messages.where("created_at > ?", chat_member.last_read_at) if chat_member.last_read_at
+    unread_messages.count
+  end
+
   private
 
   def members_count

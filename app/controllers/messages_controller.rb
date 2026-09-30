@@ -7,6 +7,7 @@ class MessagesController < ApplicationController
     @chat = set_chat
 
     if @chat.present?
+      @chat.chat_members.find_by!(user_id: @user.id).mark_as_read!
       @messages = @chat
         .messages
         .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
