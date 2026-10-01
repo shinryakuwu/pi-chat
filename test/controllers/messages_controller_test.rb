@@ -28,6 +28,7 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert chat.chat_members.find_by!(user: @sender).last_read_at.present?
+    assert_select "#chat_content[data-chat-id='#{chat.id}']"
   end
 
   test "create initial message in direct chat" do

@@ -18,14 +18,12 @@ export default class extends Controller {
     )
 
     currentChat?.classList.add("active")
+    currentChat?.querySelector(".nav_item_count")?.remove()
   }
 
   select(event) {
     this.clear()
     event.currentTarget.classList.add("active")
-  }
-
-  hideUnreadCount(event) {
     event.currentTarget.querySelector(".nav_item_count")?.remove()
   }
 
@@ -51,12 +49,22 @@ export default class extends Controller {
     Turbo.visit(url, { frame: "profile" })
   }
 
-  messageReceived(event) {
+  async messageReceived(event) {
     // navigation is reloaded when user receives a new message
-    const chatId = event.detail.chatId
+    const chatId = String(event.detail.chatId)
 
     const searchInput = this.element.querySelector("#search_input")
     const navigation = this.element.querySelector("#navigation")
+    const currentChatId =
+      this.element.querySelector("#chat_content")?.dataset.chatId
+
+    if (currentChatId === chatId) {
+      const markedAsRead = await this.markChatAsRead(chatId)
+
+      if (!markedAsRead) {
+        return
+      }
+    }
 
     const search = searchInput?.value.trim() || ""
 
@@ -76,5 +84,19 @@ export default class extends Controller {
     }
 
     navigation.src = `/chats?search=${encodeURIComponent(search)}`
+  }
+
+  async markChatAsRead(chatId) {
+    const token = document.querySelector('meta[name="csrf-token"]').content
+
+    const response = await fetch(`/chats/${chatId}/chat_member`, {
+      method: "PATCH",
+      headers: {
+        "X-CSRF-Token": token
+      },
+      credentials: "same-origin"
+    })
+
+    return response.ok
   }
 }

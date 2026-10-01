@@ -53,7 +53,7 @@
       <% unread_count = chat.unread_count(@user) %>
       <%= link_to chat_path(chat),
           class: "nav_item",
-          data: { turbo_frame: "chat", chat_id: chat.id, action: "click->sidebar#select click->sidebar#hideUnreadCount click->window#showChat" } do %>
+          data: { turbo_frame: "chat", chat_id: chat.id, action: "click->sidebar#select click->window#showChat" } do %>
         <div
           class="nav_item_picture_link"
           data-profile-url="<%= chat_profile_page(chat, @user) %>"
