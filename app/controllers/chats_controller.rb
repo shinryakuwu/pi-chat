@@ -23,8 +23,8 @@ class ChatsController < ApplicationController
     @messages = @chat
       .messages
       .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
-      .order(created_at: :asc)
-    @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
+      .order(created_at: :asc, id: :asc)
+    @stickers = Sticker.all.includes(sticker_image_attachment: :blob).order(created_at: :asc)
   end
 
   private
