@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    stdin_open: true
+    tty: true
     command: bash -c "bundle exec rails db:prepare && bundle exec rails s -b 0.0.0.0"
     ports:
       - "3000:3000"

@@ -19,11 +19,12 @@ class ChatsController < ApplicationController
 
   def show
     @chat = @user.chats.find(params[:id])
+    @chat.chat_members.find_by!(user_id: @user.id).mark_as_read!
     @messages = @chat
       .messages
       .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
-      .order(created_at: :asc)
-    @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
+      .order(created_at: :asc, id: :asc)
+    @stickers = Sticker.all.includes(sticker_image_attachment: :blob).order(created_at: :asc)
   end
 
   private

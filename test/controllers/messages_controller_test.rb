@@ -12,6 +12,25 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "opening an existing conversation marks incoming messages as read" do
+    chat = Chat.create!(
+      chat_type: :direct_chat,
+      chat_members_attributes: [ { user: @sender }, { user: @receiver } ]
+    )
+    Message.create!(
+      chat: chat,
+      author: @receiver,
+      message_type: :text_message,
+      text: "Unread message"
+    )
+
+    get user_messages_path(@receiver)
+
+    assert_response :success
+    assert chat.chat_members.find_by!(user: @sender).last_read_at.present?
+    assert_select "#chat_content[data-chat-id='#{chat.id}']"
+  end
+
   test "create initial message in direct chat" do
     assert_changes -> { Chat.count }, +1 do
       post user_messages_path(@receiver), params: { text: "I know what you did." }

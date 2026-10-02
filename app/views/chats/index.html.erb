@@ -50,6 +50,7 @@
       <% end %>
     <% end %>
     <% @chats.each do |chat| %>
+      <% unread_count = chat.unread_count(@user) %>
       <%= link_to chat_path(chat),
           class: "nav_item",
           data: { turbo_frame: "chat", chat_id: chat.id, action: "click->sidebar#select click->window#showChat" } do %>
@@ -73,6 +74,9 @@
             <div class="nav_item_message">
               <%= chat_preview(chat, @user) %>
             </div>
+            <% if unread_count.positive? %>
+              <div class="nav_item_count"><%= unread_count %></div>
+            <% end %>
           </div>
         </div>
       <% end %>

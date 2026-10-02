@@ -3,14 +3,15 @@ class MessagesController < ApplicationController
 
   def index
     # displays a conversation with the user that you find (the actual chat might not exist yet at this point)
-    @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
+    @stickers = Sticker.all.includes(sticker_image_attachment: :blob).order(created_at: :asc)
     @chat = set_chat
 
     if @chat.present?
+      @chat.chat_members.find_by!(user_id: @user.id).mark_as_read!
       @messages = @chat
         .messages
         .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
-        .order(created_at: :asc)
+        .order(created_at: :asc, id: :asc)
     end
   end
 
@@ -34,8 +35,8 @@ class MessagesController < ApplicationController
       @messages = @chat
         .messages
         .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
-        .order(created_at: :asc)
-      @stickers = Sticker.all.includes(sticker_image_attachment: :blob)
+        .order(created_at: :asc, id: :asc)
+      @stickers = Sticker.all.includes(sticker_image_attachment: :blob).order(created_at: :asc)
       @error = error.record.errors.full_messages
       render "chats/show", status: :unprocessable_entity
     end

@@ -12,12 +12,18 @@ module UsersHelper
       )
     else
       image_tag(
-        "empty.png",
+        default_profile_picture(user),
         width: width,
         height: height,
         class: class_attr,
         id: id_attr
       )
     end
+  end
+
+  private
+
+  def default_profile_picture(user)
+    user.deleted_at? ? "deleted.png" : "empty.png"
   end
 end
