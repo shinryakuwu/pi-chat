@@ -922,6 +922,16 @@ body {
   display: none;
 }
 
+#older_messages {
+  text-align: center;
+}
+
+#older_messages a {
+  font-family: PixelMplus10;
+  font-size: 20px;
+  color:#fff;
+}
+
 @media screen and (max-width: 1270px) {
   #left_side_panel, #right_side_panel {
     display: none;

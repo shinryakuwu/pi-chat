@@ -8,10 +8,10 @@ class MessagesController < ApplicationController
 
     if @chat.present?
       @chat.chat_members.find_by!(user_id: @user.id).mark_as_read!
-      @messages = @chat
-        .messages
-        .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
-        .order(created_at: :asc, id: :asc)
+      @messages, @has_older_messages = @chat.latest_messages_page
+    else
+      @messages = []
+      @has_older_messages = false
     end
   end
 
