@@ -32,10 +32,7 @@ class MessagesController < ApplicationController
       render :index, status: :unprocessable_entity
     else
       # redirect_to chat_path(@chat), alert: "Something went wrong. Please try again."
-      @messages = @chat
-        .messages
-        .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
-        .order(created_at: :asc, id: :asc)
+      @messages, @has_older_messages = @chat.latest_messages_page
       @stickers = Sticker.all.includes(sticker_image_attachment: :blob).order(created_at: :asc)
       @error = error.record.errors.full_messages
       render "chats/show", status: :unprocessable_entity

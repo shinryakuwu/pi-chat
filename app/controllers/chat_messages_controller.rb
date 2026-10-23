@@ -8,12 +8,9 @@ class ChatMessagesController < ApplicationController
 
     # this action uses a keyset pagination - it considers that the new messages can arrive while you're browsing old ones
     records = @chat.messages
-      .where(
-        "messages.created_at < :time OR " \
-        "(messages.created_at = :time AND messages.id < :id)",
-        time: before_message.created_at,
-        id: before_message.id
-      )
+      .where("(messages.created_at, messages.id) < (?, ?)",
+        before_message.created_at,
+        before_message.id)
       .includes(
         drawing_attachment: :blob,
         sticker: { sticker_image_attachment: :blob },
