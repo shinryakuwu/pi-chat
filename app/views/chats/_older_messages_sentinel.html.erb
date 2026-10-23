@@ -6,7 +6,10 @@
           chat_id: chat.id,
           before_id: before_id
         ),
-        data: { turbo_stream: true } %>
+        data: {
+          turbo_stream: true,
+          message_pagination_target: "loadLink"
+        } %>
     </div>
   <% end %>
 </div>

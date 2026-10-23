@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["sentinel"]
+  static targets = ["sentinel", "loadLink"]
 
   // User scrolls upward -> IntersectionObserver detects the sentinel -> Link is clicked programmatically ->
   // -> ChatMessagesController#index fetches older records -> Turbo prepends messages and replaces the sentinel ->
@@ -9,6 +9,7 @@ export default class extends Controller {
 
   connect() {
     this.loading = false
+    this.loadingInterval = null
 
     // IntersectionObserver is a browser API that watches whether an element is visible, or intersects, with a specified viewing area.
     // Here it will be used to implement an infinite scroll for messages.
@@ -28,6 +29,7 @@ export default class extends Controller {
   // Disconnect the IntersectionObserver when the controller is disconnected to avoid memory leaks (happens when we close the chat).
   disconnect() {
     this.observer?.disconnect()
+    this.stopLoading()
   }
 
   // This method is called when the sentinel element is connected to the DOM (we constantly reconnect it in the process of scrolling).
@@ -36,13 +38,36 @@ export default class extends Controller {
       return
     }
 
-    this.loading = false
+    this.stopLoading()
     this.observer.observe(element)
   }
 
   // This method is called when the sentinel element is disconnected from the DOM.
   sentinelTargetDisconnected(element) {
     this.observer?.unobserve(element)
+    this.stopLoading()
+  }
+
+  startLoading(link) {
+    this.loading = true
+
+    const frames = [".", "..", "..."]
+    let frameIndex = 0
+    link.textContent = frames[frameIndex]
+
+    this.loadingInterval = window.setInterval(() => {
+      frameIndex = (frameIndex + 1) % frames.length
+      link.textContent = frames[frameIndex]
+    }, 250)
+  }
+
+  stopLoading() {
+    if (this.loadingInterval !== null) {
+      window.clearInterval(this.loadingInterval)
+      this.loadingInterval = null
+    }
+
+    this.loading = false
   }
 
   // This method is called when the sentinel element intersects with the chat container.
@@ -59,9 +84,10 @@ export default class extends Controller {
         continue
       }
 
-      this.loading = true
+      this.startLoading(link)
       this.observer.unobserve(entry.target)
       link.click()
+      link.removeAttribute("href")
     }
   }
 
