@@ -17,16 +17,29 @@ class MessagesController < ApplicationController
 
   def create
     # this action processes both chat_messages_path(chat) and user_messages_path(user)
+    created_chat = false
+
     ApplicationRecord.transaction do # all database changes must succeed or fail together
       @chat =
       if params[:chat_id].present?
         @user.chats.find(params[:chat_id])
       elsif params[:user_id].present?
-        set_chat || create_chat
+        set_chat || begin
+          created_chat = true
+          create_chat
+        end
       end
       send_message
     end
-    redirect_to chat_path(@chat)
+
+    if created_chat
+      redirect_to chat_path(@chat)
+    else
+      respond_to do |format|
+        format.turbo_stream { head :no_content }
+        format.html { redirect_to chat_path(@chat) }
+      end
+    end
   rescue ActiveRecord::RecordInvalid => error
     if params[:user_id].present?
       render :index, status: :unprocessable_entity

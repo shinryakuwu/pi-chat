@@ -50,6 +50,14 @@ export default class extends Controller {
       return
     }
 
+    if (event.target.id === "chat_text_tab") {
+      const input = this.element.querySelector("#message_input")
+
+      if (input) {
+        input.value = ""
+      }
+    }
+
     this.element.dispatchEvent(
       new CustomEvent("message:sent", { bubbles: true })
     )

@@ -51,6 +51,34 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_match "I know what you did.", response.body
   end
 
+  test "create message in existing chat does not redirect a Turbo submission" do
+    chat = Chat.create!(
+      chat_type: :direct_chat,
+      chat_members_attributes: [ { user: @sender }, { user: @receiver } ]
+    )
+
+    post chat_messages_path(chat),
+      params: { text: "Keep this chat frame in place." },
+      headers: { "Accept" => Mime[:turbo_stream].to_s }
+
+    assert_response :no_content
+    assert_equal "Keep this chat frame in place.", chat.messages.last.text
+  end
+
+  test "create message through an existing user conversation does not redirect a Turbo submission" do
+    chat = Chat.create!(
+      chat_type: :direct_chat,
+      chat_members_attributes: [ { user: @sender }, { user: @receiver } ]
+    )
+
+    post user_messages_path(@receiver),
+      params: { text: "Keep the existing conversation in place." },
+      headers: { "Accept" => Mime[:turbo_stream].to_s }
+
+    assert_response :no_content
+    assert_equal "Keep the existing conversation in place.", chat.messages.last.text
+  end
+
   test "create a very long message" do
     chat = @sender.chats.self_chat.first
 
