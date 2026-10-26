@@ -4,7 +4,11 @@
       root_path,
       data: { turbo_frame: "chat", action: "click->sidebar#clear click->window#showNavigation" },
       id: "back_to_navigation" %>
-  <div id="chat_container" data-controller="messages">
+  <div id="chat_container" data-controller="messages message-pagination" data-action="turbo:before-stream-render@document->messages#handleStreamRender">
+    <%= render "chats/older_messages_sentinel",
+      chat: @chat,
+      has_older_messages: @has_older_messages,
+      before_id: @messages.first&.id %>
     <div id="chat_content" data-chat-id="<%= @chat&.id %>">
       <% @messages&.each do |message| %>
         <%= render "messages/message", message: message, user: @user %>

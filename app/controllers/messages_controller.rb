@@ -8,34 +8,44 @@ class MessagesController < ApplicationController
 
     if @chat.present?
       @chat.chat_members.find_by!(user_id: @user.id).mark_as_read!
-      @messages = @chat
-        .messages
-        .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
-        .order(created_at: :asc, id: :asc)
+      @messages, @has_older_messages = @chat.latest_messages_page
+    else
+      @messages = []
+      @has_older_messages = false
     end
   end
 
   def create
     # this action processes both chat_messages_path(chat) and user_messages_path(user)
+    created_chat = false
+
     ApplicationRecord.transaction do # all database changes must succeed or fail together
       @chat =
       if params[:chat_id].present?
         @user.chats.find(params[:chat_id])
       elsif params[:user_id].present?
-        set_chat || create_chat
+        set_chat || begin
+          created_chat = true
+          create_chat
+        end
       end
       send_message
     end
-    redirect_to chat_path(@chat)
+
+    if created_chat
+      redirect_to chat_path(@chat)
+    else
+      respond_to do |format|
+        format.turbo_stream { head :no_content }
+        format.html { redirect_to chat_path(@chat) }
+      end
+    end
   rescue ActiveRecord::RecordInvalid => error
     if params[:user_id].present?
       render :index, status: :unprocessable_entity
     else
       # redirect_to chat_path(@chat), alert: "Something went wrong. Please try again."
-      @messages = @chat
-        .messages
-        .includes(drawing_attachment: :blob, sticker: { sticker_image_attachment: :blob })
-        .order(created_at: :asc, id: :asc)
+      @messages, @has_older_messages = @chat.latest_messages_page
       @stickers = Sticker.all.includes(sticker_image_attachment: :blob).order(created_at: :asc)
       @error = error.record.errors.full_messages
       render "chats/show", status: :unprocessable_entity

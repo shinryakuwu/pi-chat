@@ -22,4 +22,6 @@ Rails.application.routes.draw do
   resource :session, only: [ :new, :create, :destroy ]
   resource :password, only: [ :update, :edit ]
   resource :profile_picture, only: [ :create, :destroy ]
+
+  get "/chats/:chat_id/messages", to: "chat_messages#index", as: :chat_message_history
 end

@@ -1,0 +1,15 @@
+<div id="older_messages">
+  <% if chat.present? && has_older_messages %>
+    <div data-message-pagination-target="sentinel">
+      <%= link_to "Load older messages",
+        chat_message_history_path(
+          chat_id: chat.id,
+          before_id: before_id
+        ),
+        data: {
+          turbo_stream: true,
+          message_pagination_target: "loadLink"
+        } %>
+    </div>
+  <% end %>
+</div>

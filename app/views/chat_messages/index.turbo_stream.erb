@@ -1,0 +1,13 @@
+<%= turbo_stream.prepend "chat_content" do %>
+  <%= render partial: "messages/message",
+    collection: @messages,
+    as: :message,
+    locals: { user: @user } %>
+<% end %>
+
+<%= turbo_stream.replace "older_messages" do %>
+  <%= render "chats/older_messages_sentinel",
+    chat: @chat,
+    has_older_messages: @has_older_messages,
+    before_id: @messages.first&.id %>
+<% end %>

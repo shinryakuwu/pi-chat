@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_30_230000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -73,7 +73,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_230000) do
     t.text "text"
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_messages_on_author_id"
-    t.index ["chat_id"], name: "index_messages_on_chat_id"
+    t.index ["chat_id", "created_at", "id"], name: "index_messages_on_chat_id_and_created_at_and_id"
     t.index ["replied_message_id"], name: "index_messages_on_replied_message_id"
     t.index ["sticker_id"], name: "index_messages_on_sticker_id"
   end
